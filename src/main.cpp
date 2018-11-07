@@ -1,5 +1,6 @@
 #include <ccom/util.hpp>
 #include <ccom/draw_manager.hpp>
+#include <ccom/geometry.hpp>
 
 #include <iostream>
 #include <cmath>
