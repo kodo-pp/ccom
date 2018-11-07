@@ -1,0 +1,9 @@
+build
+main
+*.o
+*.d
+*.tmp
+core.dmp
+*.pch
+run.sh
+.build-cache

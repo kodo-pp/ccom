@@ -1,0 +1,4 @@
+D_EXECUTABLE=main
+D_SOURCES=(src)
+D_INCDIRS=include
+D_FLAGS[cpp]='-Wall -Wextra -pedantic -std=c++17'
