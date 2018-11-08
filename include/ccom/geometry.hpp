@@ -69,12 +69,7 @@ public:
     Point<T> end;
 };
 
-Point<int> relative_to_absolute_point(const Point<double>& pt, int width, int height) {
-    return {
-        static_cast<int>(floor(pt.x * width)),
-        static_cast<int>(floor(pt.y * height)),
-    };
-}
+Point<int> relative_to_absolute_point(const Point<double>& pt, int width, int height); // Implemented in src/geometry.cpp
 
 template <template <typename T> typename Container>
 Container<int> relative_to_absolute(const Container<double>& container, int width, int height) {

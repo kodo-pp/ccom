@@ -1,4 +1,6 @@
 #pragma once
+#include <ccom/geometry.hpp>
+
 #include <utility>
 #include <vector>
 #include <string>
@@ -15,24 +17,23 @@ public:
 
     void set_buffer_size(int width, int height, char clear_char = ' ');
 
-    void draw_line(const std::pair<int, int>& start, const std::pair<int, int>& end, char fill_char);
+    void draw_line(
+        const AbsoluteLine& line,
+        char fill_char
+    );
     void draw_line(
         std::vector<std::string>& buffer,
-        const std::pair<int, int>& start,
-        const std::pair<int, int>& end,
+        const AbsoluteLine& line,
         char fill_char
     );
+
     void fill_triangle(
-        const std::pair<int, int>& v1,
-        const std::pair<int, int>& v2,
-        const std::pair<int, int>& v3,
+        const AbsoluteTriangle& tri,
         char fill_char
     );
     void fill_triangle(
         std::vector<std::string>& buffer,
-        const std::pair<int, int>& v1,
-        const std::pair<int, int>& v2,
-        const std::pair<int, int>& v3,
+        const AbsoluteTriangle& tri,
         char fill_char
     );
 

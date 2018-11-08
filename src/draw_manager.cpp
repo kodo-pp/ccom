@@ -1,37 +1,39 @@
 #include <ccom/draw_manager.hpp>
 #include <ccom/util.hpp>
-#include <sstream>
+#include <ccom/geometry.hpp>
 
+#include <sstream>
 #include <algorithm>
+#include <shared_mutex>
 
 namespace ccom
 {
 
 void DrawManager::draw_line(
-    const std::pair<int, int>& start,
-    const std::pair<int, int>& end,
+    const AbsoluteLine& line,
     char fill_char
 ) {
-    draw_line(buffer, start, end, fill_char);
+    draw_line(buffer, line, fill_char);
 }
 
 void DrawManager::draw_line(
     std::vector<std::string>& buffer,
-    const std::pair<int, int>& start,
-    const std::pair<int, int>& end,
+    const AbsoluteLine& line,
     char fill_char
 ) {
-    auto delta_x = end.first - start.first;
-    auto delta_y = end.second - start.second;
+    auto start = line.start;
+    auto end = line.end;
+    auto delta_x = end.x - start.x;
+    auto delta_y = end.y - start.y;
 
     if (delta_y == 0) {
-        for (auto i = std::min(start.first, end.first); i <= std::max(start.first, end.first); ++i) {
-            buffer.at(start.second).at(i) = fill_char;
+        for (auto i = std::min(start.x, end.x); i <= std::max(start.x, end.x); ++i) {
+            buffer.at(start.y).at(i) = fill_char;
         }
         return;
     } else if (delta_x == 0) {
-        for (auto i = std::min(start.second, end.second); i <= std::max(start.second, end.second); ++i) {
-            buffer.at(i).at(start.first) = fill_char;
+        for (auto i = std::min(start.y, end.y); i <= std::max(start.y, end.y); ++i) {
+            buffer.at(i).at(start.x) = fill_char;
         }
         return;
     }
@@ -40,28 +42,28 @@ void DrawManager::draw_line(
     auto to = end;
 
     if (abs(delta_x) > abs(delta_y)) {
-        if (to.first < from.first) {
+        if (to.x < from.x) {
             std::swap(from, to);
             delta_x = -delta_x;
             delta_y = -delta_y;
         }
 
-        auto base_x = from.first;
-        auto base_y = from.second;
+        auto base_x = from.x;
+        auto base_y = from.y;
         for (int i = 0; i <= delta_x; ++i) {
             auto point_x = base_x + i;
             auto point_y = base_y + rounded_integer_division(i * delta_y, delta_x);
             buffer.at(point_y).at(point_x) = fill_char;
         }
     } else {
-        if (to.second < from.second) {
+        if (to.y < from.y) {
             std::swap(from, to);
             delta_x = -delta_x;
             delta_y = -delta_y;
         }
 
-        auto base_x = from.first;
-        auto base_y = from.second;
+        auto base_x = from.x;
+        auto base_y = from.y;
         for (int i = 0; i <= delta_y; ++i) {
             auto point_x = base_x + rounded_integer_division(i * delta_x, delta_y);
             auto point_y = base_y + i;
@@ -71,40 +73,40 @@ void DrawManager::draw_line(
 }
 
 void DrawManager::fill_triangle(
-    const std::pair<int, int>& v1,
-    const std::pair<int, int>& v2,
-    const std::pair<int, int>& v3,
+    const AbsoluteTriangle& tri,
     char fill_char
 ) {
-    fill_triangle(buffer, v1, v2, v3, fill_char);
+    fill_triangle(buffer, tri, fill_char);
 }
 
 void DrawManager::fill_triangle(
     std::vector<std::string>& buffer,
-    const std::pair<int, int>& v1,
-    const std::pair<int, int>& v2,
-    const std::pair<int, int>& v3,
+    const AbsoluteTriangle& tri,
     char fill_char
 ) {
-    auto min_x = std::min(std::min(v1.first,  v2.first),  v3.first);
-    auto min_y = std::min(std::min(v1.second, v2.second), v3.second);
-    auto max_x = std::max(std::max(v1.first,  v2.first),  v3.first);
-    auto max_y = std::max(std::max(v1.second, v2.second), v3.second);
+    auto v1 = tri.a;
+    auto v2 = tri.b;
+    auto v3 = tri.c;
+
+    auto min_x = std::min(std::min(v1.x,  v2.x),  v3.x);
+    auto min_y = std::min(std::min(v1.y, v2.y), v3.y);
+    auto max_x = std::max(std::max(v1.x,  v2.x),  v3.x);
+    auto max_y = std::max(std::max(v1.y, v2.y), v3.y);
 
     int delta_x = max_x - min_x + 1;
     int delta_y = max_y - min_y + 1;
     std::vector<std::string> temporary_buffer(delta_y, std::string(delta_x, '?'));
 
-    auto x1 = v1.first - min_x;
-    auto x2 = v2.first - min_x;
-    auto x3 = v3.first - min_x;
-    auto y1 = v1.second - min_y;
-    auto y2 = v2.second - min_y;
-    auto y3 = v3.second - min_y;
+    auto x1 = v1.x - min_x;
+    auto x2 = v2.x - min_x;
+    auto x3 = v3.x - min_x;
+    auto y1 = v1.y - min_y;
+    auto y2 = v2.y - min_y;
+    auto y3 = v3.y - min_y;
 
-    draw_line(temporary_buffer, {x1, y1}, {x2, y2}, '1');
-    draw_line(temporary_buffer, {x1, y1}, {x3, y3}, '1');
-    draw_line(temporary_buffer, {x2, y2}, {x3, y3}, '1');
+    draw_line(temporary_buffer, {{x1, y1}, {x2, y2}}, '1');
+    draw_line(temporary_buffer, {{x1, y1}, {x3, y3}}, '1');
+    draw_line(temporary_buffer, {{x2, y2}, {x3, y3}}, '1');
     
     for (auto& line : temporary_buffer) {
         for (int j = 0; j < static_cast<int>(line.length()) && line.at(j) != '1'; ++j) {

@@ -18,15 +18,20 @@ int main() {
     auto get_delta = [](double angle) {
         int offset_x = cos(angle) * 30;
         int offset_y = sin(angle) * 15;
-        return std::make_pair(60 + offset_x, 20 + offset_y);
+        return ccom::AbsolutePoint(60 + offset_x, 20 + offset_y);
+    };
+
+    auto get_triangle = [&](double angle) {
+        return ccom::AbsoluteTriangle(
+            get_delta(angle),
+            get_delta(angle + 2 * M_PI / 3),
+            get_delta(angle - 2 * M_PI / 3)
+        );
     };
     
     double angle = 0;
     while (true) {
-        auto v1 = get_delta(angle);
-        auto v2 = get_delta(angle + 2 * M_PI / 3);
-        auto v3 = get_delta(angle - 2 * M_PI / 3);
-        draw.fill_triangle(v1, v2, v3, '#');
+        draw.fill_triangle(get_triangle(angle), '#');
         draw.flush_buffer(std::cout);
         draw.clear_buffer('.');
         usleep(1'000'000 / 30);

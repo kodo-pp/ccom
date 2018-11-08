@@ -7,6 +7,7 @@ project(
 sources = [
     'src/main.cpp',
     'src/draw_manager.cpp',
+    'src/geometry.cpp',
 ]
 
 includes = [
