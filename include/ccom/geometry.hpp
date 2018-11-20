@@ -1,11 +1,46 @@
 #pragma once
 #include <ccom/util.hpp>
+#include <ccom/rasterizer.hpp>
 
 #include <iostream>
 #include <array>
+#include <vector>
 #include <cmath>
+#include <stdexcept>
+#include <exception>
+
+namespace ccom {
+
+class InvalidFormatIndexError : std::runtime_error {
+    InvalidFormatIndexError(size_t size, size_t index)
+        : std::runtime_error(
+            "Format index out of bounds: attempted to access index "
+            + std::to_string(index)
+            + " while format length is "
+            + std::to_string(size)
+        ) { }
+}
+
+char access_format(const std::vector<char>& format, size_t at) {
+    if (at >= format.size()) {
+        throw InvalidFormatIndexError(format.size(), at);
+    }
+    return format[at];
+}
+
+} // namespace ccom
 
 namespace ccom::geometry {
+
+
+template <typename T>
+class Object {
+public:
+    Object() = default;
+    virtual ~Object() = default;
+
+    virtual void draw(Rasterizer& raster, const std::vector<char>& format) const = 0;
+};
 
 template <typename T>
 class Point {
@@ -22,7 +57,7 @@ public:
 };
 
 template <typename T>
-class Triangle {
+class Triangle : public Object {
 public:
     Triangle() = delete;
     Triangle(const Point<T>& a, const Point<T>& b, const Point<T>& c)
@@ -42,13 +77,17 @@ public:
         return arr;
     }
 
+    virtual void draw(Rasterizer& raster, const std::vector<char>& format) const override {
+        raster.fill_triangle(*this, access_format(format, 0));
+    }
+
     Point<T> a;
     Point<T> b;
     Point<T> c;
 };
 
 template <typename T>
-class Line {
+class Line : public Object {
 public:
     Line() = delete;
     Line(const Point<T>& start, const Point<T>& end)
@@ -63,6 +102,10 @@ public:
         arr[0] = start;
         arr[1] = end;
         return arr;
+    }
+    
+    virtual void draw(Rasterizer& raster, const std::vector<char>& format) const override {
+        raster.draw_line(*this, access_format(format, 0));
     }
 
     Point<T> start;
