@@ -9,31 +9,31 @@
 
 namespace ccom {
 
-class DrawManager {
+class Rasterizer {
 public:
-    DrawManager() = default;
-    DrawManager(const DrawManager& other) = delete;
-    DrawManager& operator=(const DrawManager& other) = delete;
+    Rasterizer() = default;
+    Rasterizer(const Rasterizer& other) = delete;
+    Rasterizer& operator=(const Rasterizer& other) = delete;
 
     void set_buffer_size(int width, int height, char clear_char = ' ');
 
     void draw_line(
-        const AbsoluteLine& line,
+        const geometry::AbsoluteLine& line,
         char fill_char
     );
     void draw_line(
         std::vector<std::string>& buffer,
-        const AbsoluteLine& line,
+        const geometry::AbsoluteLine& line,
         char fill_char
     );
 
     void fill_triangle(
-        const AbsoluteTriangle& tri,
+        const geometry::AbsoluteTriangle& tri,
         char fill_char
     );
     void fill_triangle(
         std::vector<std::string>& buffer,
-        const AbsoluteTriangle& tri,
+        const geometry::AbsoluteTriangle& tri,
         char fill_char
     );
 
@@ -46,6 +46,6 @@ private:
     std::vector <std::string> buffer;
 };
 
-DrawManager& get_draw_manager();
+Rasterizer& get_rasterizer();
 
 } // namespace ccom

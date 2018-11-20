@@ -1,4 +1,4 @@
-#include <ccom/draw_manager.hpp>
+#include <ccom/rasterizer.hpp>
 #include <ccom/util.hpp>
 #include <ccom/geometry.hpp>
 
@@ -9,16 +9,16 @@
 namespace ccom
 {
 
-void DrawManager::draw_line(
-    const AbsoluteLine& line,
+void Rasterizer::draw_line(
+    const geometry::AbsoluteLine& line,
     char fill_char
 ) {
     draw_line(buffer, line, fill_char);
 }
 
-void DrawManager::draw_line(
+void Rasterizer::draw_line(
     std::vector<std::string>& buffer,
-    const AbsoluteLine& line,
+    const geometry::AbsoluteLine& line,
     char fill_char
 ) {
     auto start = line.start;
@@ -72,16 +72,16 @@ void DrawManager::draw_line(
     }
 }
 
-void DrawManager::fill_triangle(
-    const AbsoluteTriangle& tri,
+void Rasterizer::fill_triangle(
+    const geometry::AbsoluteTriangle& tri,
     char fill_char
 ) {
     fill_triangle(buffer, tri, fill_char);
 }
 
-void DrawManager::fill_triangle(
+void Rasterizer::fill_triangle(
     std::vector<std::string>& buffer,
-    const AbsoluteTriangle& tri,
+    const geometry::AbsoluteTriangle& tri,
     char fill_char
 ) {
     auto v1 = tri.a;
@@ -126,7 +126,7 @@ void DrawManager::fill_triangle(
     }
 }
 
-void DrawManager::flush_buffer(std::ostream& out) const {
+void Rasterizer::flush_buffer(std::ostream& out) const {
     std::stringstream text_buffer;
     if (complete_redraw_flag) {
         complete_redraw_flag = false;
@@ -141,7 +141,7 @@ void DrawManager::flush_buffer(std::ostream& out) const {
     out.flush();
 }
 
-void DrawManager::clear_buffer(char clear_char) {
+void Rasterizer::clear_buffer(char clear_char) {
     for (auto& line : buffer) {
         for (auto& ch : line) {
             ch = clear_char;
@@ -149,7 +149,7 @@ void DrawManager::clear_buffer(char clear_char) {
     }
 }
 
-void DrawManager::set_buffer_size(int width, int height, char clear_char) {
+void Rasterizer::set_buffer_size(int width, int height, char clear_char) {
     buffer.resize(height);
     for (auto& line : buffer) {
         line.resize(width, clear_char);
@@ -157,9 +157,9 @@ void DrawManager::set_buffer_size(int width, int height, char clear_char) {
     complete_redraw_flag = true;
 }
 
-DrawManager& get_draw_manager() {
-    static DrawManager draw_manager;
-    return draw_manager;
+Rasterizer& get_rasterizer() {
+    static Rasterizer rasterizer;
+    return rasterizer;
 }
 
 } // namespace ccom

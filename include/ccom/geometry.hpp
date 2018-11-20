@@ -5,7 +5,7 @@
 #include <array>
 #include <cmath>
 
-namespace ccom {
+namespace ccom::geometry {
 
 template <typename T>
 class Point {
@@ -91,10 +91,4 @@ using AbsolutePoint    = Point<int>;
 using AbsoluteTriangle = Triangle<int>;
 using AbsoluteLine     = Line<int>;
 
-} // namespace ccom
-
-template <typename T>
-std::ostream& operator<<(std::ostream& out, const ccom::Point<T>& pt) {
-    out << "(" << pt.x << ", " << pt.y << ")";
-    return out;
-}
+} // namespace ccom::geometry

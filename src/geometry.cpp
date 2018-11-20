@@ -1,6 +1,6 @@
 #include <ccom/geometry.hpp>
 
-namespace ccom {
+namespace ccom::geometry {
 
 Point<int> relative_to_absolute_point(const Point<double>& pt, int width, int height) {
     return {
@@ -9,4 +9,4 @@ Point<int> relative_to_absolute_point(const Point<double>& pt, int width, int he
     };
 }
 
-} // namespace ccom
+} // namespace ccom::geometry
