@@ -17,6 +17,16 @@ public:
 
     void set_buffer_size(int width, int height, char clear_char = ' ');
 
+    void draw_point(
+        const geometry::AbsolutePoint& pt,
+        char fill_char
+    );
+    void draw_point(
+        std::vector<std::string>& buffer,
+        const geometry::AbsolutePoint& pt,
+        char fill_char
+    );
+
     void draw_line(
         const geometry::AbsoluteLine& line,
         char fill_char
@@ -43,7 +53,7 @@ public:
 private:
     mutable std::shared_mutex mutex;
     mutable bool complete_redraw_flag = true;
-    std::vector <std::string> buffer;
+    std::vector<std::string> buffer;
 };
 
 Rasterizer& get_rasterizer();

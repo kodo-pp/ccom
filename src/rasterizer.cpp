@@ -3,11 +3,28 @@
 #include <ccom/geometry.hpp>
 
 #include <sstream>
+#include <stdexcept>
 #include <algorithm>
 #include <shared_mutex>
 
 namespace ccom
 {
+
+void Rasterizer::draw_point(
+    const geometry::AbsolutePoint& pt,
+    char fill_char
+) {
+    draw_point(buffer, pt, fill_char);
+}
+
+void Rasterizer::draw_point(
+    std::vector<std::string>& buffer,
+    const geometry::AbsolutePoint& pt,
+    char fill_char
+) {
+    // TODO: bound check (currently performed by .at())
+    buffer.at(pt.y).at(pt.x) = fill_char;
+}
 
 void Rasterizer::draw_line(
     const geometry::AbsoluteLine& line,

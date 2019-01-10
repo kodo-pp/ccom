@@ -7,3 +7,4 @@ core.dmp
 *.pch
 run.sh
 .build-cache
+.sh3
