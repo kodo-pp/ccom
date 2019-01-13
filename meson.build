@@ -8,6 +8,10 @@ sources = [
     'src/main.cpp',
     'src/rasterizer.cpp',
     'src/geometry.cpp',
+    'src/compositor.cpp',
+    'src/objects/point.cpp',
+    'src/objects/rectangle.cpp',
+    'src/objects/triangle.cpp',
 ]
 
 includes = [
