@@ -4,6 +4,7 @@ namespace ccom::objects {
 
 Triangle::Triangle(const ccom::geometry::AbsoluteTriangle& tri, char fill)
     : tri(tri)
+    , orig_tri(tri)
     , fill(fill) { }
 
 void Triangle::draw(ccom::Rasterizer& rast) const {
@@ -22,10 +23,13 @@ void Triangle::move(int x, int y) {
 
 void Triangle::rotate(double angle, ccom::geometry::AngleMeasurementUnit mu) {
     // TODO: rotate the original triangle and save it into the second one (store 2 triangles)
+    tri = orig_tri;
     auto center = get_center();
-    tri.a.rotate(center, angle, mu); 
-    tri.b.rotate(center, angle, mu); 
-    tri.c.rotate(center, angle, mu); 
+    auto radians = ccom::geometry::to_radians(angle, mu) + rotation;
+    tri.a.rotate(center, radians, ccom::geometry::AngleMeasurementUnit::radians); 
+    tri.b.rotate(center, radians, ccom::geometry::AngleMeasurementUnit::radians); 
+    tri.c.rotate(center, radians, ccom::geometry::AngleMeasurementUnit::radians); 
+    rotation = radians;
 }
 
 ccom::geometry::AbsolutePoint Triangle::get_center() const {

@@ -17,7 +17,9 @@ public:
     virtual ccom::geometry::AbsolutePoint get_center() const;
 
 private:
+    double rotation = 0;
     ccom::geometry::AbsoluteTriangle tri;
+    ccom::geometry::AbsoluteTriangle orig_tri;
     char fill;
 };
 

@@ -32,9 +32,9 @@ int main() {
     double angle = 0;
     while (true) {
         rast.clear_buffer(':');
-        tri->rotate(-10.0, ccom::geometry::AngleMeasurementUnit::degrees);
+        tri->rotate(1, ccom::geometry::AngleMeasurementUnit::degrees);
         comp.draw(rast);
         rast.flush_buffer(std::cout);
-        usleep(1000000 / 1);
+        usleep(1000000 / 60);
     };
 }
