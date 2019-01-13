@@ -3,6 +3,7 @@
 #include <ccom/compositor.hpp>
 #include <ccom/geometry.hpp>
 #include <ccom/objects/triangle.hpp>
+#include <ccom/objects/rectangle.hpp>
 
 #include <iostream>
 #include <iomanip>
@@ -18,21 +19,20 @@ int main() {
     auto& rast = ccom::get_rasterizer();
     auto& comp = ccom::get_compositor();
 
-    auto tri = new ccom::objects::Triangle(
-        ccom::geometry::AbsoluteTriangle(
-            {10, 10},
-            {60, 30},
-            {15, 30}), 
-        '#'
+    auto rect = new ccom::objects::Rectangle(
+        {10, 10},
+        {15, 20}, 
+        'o'
     );
-    comp.add(tri);
+    comp.add(rect);
 
-    rast.set_buffer_size(width, height, ':');
+    rast.set_buffer_size(width, height, '.');
 
-    double angle = 0;
     while (true) {
-        rast.clear_buffer(':');
-        tri->rotate(1, ccom::geometry::AngleMeasurementUnit::degrees);
+        rast.clear_buffer('.');
+        rect->rotate(-2, ccom::geometry::AngleMeasurementUnit::degrees);
+        auto angle = rect->get_rotation();
+        rect->move(sin(-angle) * 0.3, cos(-angle) * 0.3);
         comp.draw(rast);
         rast.flush_buffer(std::cout);
         usleep(1000000 / 60);

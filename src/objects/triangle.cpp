@@ -19,6 +19,12 @@ void Triangle::move(int x, int y) {
     tri.b.x += x;
     tri.c.y += y;
     tri.c.y += y;
+    orig_tri.a.x += x;
+    orig_tri.a.y += y;
+    orig_tri.b.x += x;
+    orig_tri.b.x += x;
+    orig_tri.c.y += y;
+    orig_tri.c.y += y;
 }
 
 void Triangle::rotate(double angle, ccom::geometry::AngleMeasurementUnit mu) {
