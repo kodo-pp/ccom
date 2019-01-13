@@ -7,6 +7,16 @@
 
 namespace ccom::geometry {
 
+enum class AngleMeasurementUnit {
+    degrees,
+    radians,
+};
+
+
+double to_radians(double angle, AngleMeasurementUnit source_mu);
+double from_radians(double radians, AngleMeasurementUnit target_mu);
+
+
 template <typename T>
 class Point {
 public:
@@ -16,6 +26,17 @@ public:
     Point(const T& x, const T& y)
         : x(x)
         , y(y) { }
+    void rotate(
+        const Point<T>& pivot,
+        double angle,
+        AngleMeasurementUnit mu
+    ) {
+        auto radians = to_radians(angle, mu);
+        auto nx = cos(radians) * (x - pivot.x) - sin(radians) * (y - pivot.y) + pivot.x;
+        auto ny = cos(radians) * (y - pivot.y) + sin(radians) * (x - pivot.x) + pivot.y;
+        x = nx;
+        y = ny;
+    }
 
     T x;
     T y;

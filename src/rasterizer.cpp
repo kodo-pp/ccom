@@ -7,8 +7,21 @@
 #include <algorithm>
 #include <shared_mutex>
 
-namespace ccom
-{
+namespace ccom {
+
+namespace {
+
+std::string duplicate_chars(const std::string& s) {
+    std::string z;
+    z.reserve(2 * s.size());
+    for (char c : s) {
+        z += c;
+        z += c;
+    }
+    return z;
+}
+
+} // namespace
 
 void Rasterizer::draw_point(
     const geometry::AbsolutePoint& pt,
@@ -137,7 +150,11 @@ void Rasterizer::fill_triangle(
     for (int i = 0; i < delta_y; ++i) {
         for (int j = 0; j < delta_x; ++j) {
             if (temporary_buffer.at(i).at(j) != '0') {
-                buffer.at(i + min_y).at(j + min_x) = fill_char;
+                try {
+                    buffer.at(i + min_y).at(j + min_x) = fill_char;
+                } catch (const std::out_of_range&) {
+                    continue;
+                }
             }
         }
     }
@@ -152,7 +169,7 @@ void Rasterizer::flush_buffer(std::ostream& out) const {
     text_buffer << "\x1b[0;0H"; // Put cursor to (0, 0)
 
     for (const auto& line : buffer) {
-        text_buffer << line << '\n';
+        text_buffer << duplicate_chars(line) << '\n';
     }
     out << text_buffer.str();
     out.flush();
