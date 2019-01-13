@@ -163,16 +163,23 @@ void Rasterizer::fill_triangle(
 void Rasterizer::flush_buffer(std::ostream& out) const {
     std::stringstream text_buffer;
     if (complete_redraw_flag) {
-        complete_redraw_flag = false;
         text_buffer << "\x1b[3J\x1b[H\x1b[J"; // Clear screen
     }
     text_buffer << "\x1b[0;0H"; // Put cursor to (0, 0)
 
-    for (const auto& line : buffer) {
-        text_buffer << duplicate_chars(line) << '\n';
+    for (int i = 0; i < int(buffer.size()); ++i) {
+        const auto& line = buffer.at(i);
+        const auto& back_line = back_buffer.at(i);
+        if (!complete_redraw_flag && line == back_line) {
+            text_buffer << '\n';
+        } else {
+            text_buffer << duplicate_chars(line) << '\n';
+        }
     }
     out << text_buffer.str();
     out.flush();
+    back_buffer = buffer;
+    complete_redraw_flag = false;
 }
 
 void Rasterizer::clear_buffer(char clear_char) {
@@ -185,7 +192,11 @@ void Rasterizer::clear_buffer(char clear_char) {
 
 void Rasterizer::set_buffer_size(int width, int height, char clear_char) {
     buffer.resize(height);
+    back_buffer.resize(height);
     for (auto& line : buffer) {
+        line.resize(width, clear_char);
+    }
+    for (auto& line : back_buffer) {
         line.resize(width, clear_char);
     }
     complete_redraw_flag = true;

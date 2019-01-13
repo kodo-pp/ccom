@@ -54,6 +54,7 @@ private:
     mutable std::shared_mutex mutex;
     mutable bool complete_redraw_flag = true;
     std::vector<std::string> buffer;
+    mutable std::vector<std::string> back_buffer;
 };
 
 Rasterizer& get_rasterizer();
